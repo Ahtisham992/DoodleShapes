@@ -124,6 +124,21 @@ function App() {
     }
   };
 
+  /**
+   * Bring the selected shape to the front (top layer)
+   */
+  const bringToFront = () => {
+    if (selectedShape) {
+      const shape = shapes.find(s => s.id === selectedShape);
+      if (shape) {
+        // Remove the selected shape from its current position
+        const otherShapes = shapes.filter(s => s.id !== selectedShape);
+        // Add it to the end of the array (which renders on top)
+        setShapes([...otherShapes, shape]);
+      }
+    }
+  };
+
   return (
     <div className="app">
       <div className="title">🔺⬜⭕📐 Shape Canvas - Learn Shapes! 🔺⬜⭕📐</div>
@@ -135,6 +150,7 @@ function App() {
         onChangeSize={changeSize}
         onChangeColor={changeColor}
         onRotate={rotateShape}
+        onBringToFront={bringToFront}
         hasSelection={selectedShape !== null}
       />
       

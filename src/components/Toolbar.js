@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 /**
  * Toolbar component with buttons for shape operations
- * Contains: Shape Dropdown, Size Controls, Color Picker, Rotation Controls, Erase Selected, Clear Board
+ * Contains: Shape Dropdown, Size Controls, Color Picker, Rotation Controls, Bring to Front, Erase Selected, Clear Board
  */
-function Toolbar({ onAddShape, onErase, onClear, onChangeSize, onChangeColor, onRotate, hasSelection }) {
+function Toolbar({ onAddShape, onErase, onClear, onChangeSize, onChangeColor, onRotate, onBringToFront, hasSelection }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState('#ff6b6b');
 
@@ -136,6 +136,22 @@ function Toolbar({ onAddShape, onErase, onClear, onChangeSize, onChangeColor, on
           />
         </div>
       </div>
+
+      {/* Bring to Front Button */}
+      <button 
+        className="toolbar-button"
+        onClick={onBringToFront}
+        disabled={!hasSelection}
+        title={hasSelection ? "Bring selected shape to front" : "Select a shape first"}
+        style={{ 
+          opacity: hasSelection ? 1 : 0.5,
+          cursor: hasSelection ? 'pointer' : 'not-allowed',
+          background: hasSelection ? 'linear-gradient(45deg, #4CAF50, #66BB6A)' : 'linear-gradient(45deg, #cccccc, #dddddd)',
+          boxShadow: hasSelection ? '0 4px 15px rgba(76, 175, 80, 0.3)' : 'none'
+        }}
+      >
+        ⬆️ Bring to Front
+      </button>
 
       {/* Erase Selected Button */}
       <button 
