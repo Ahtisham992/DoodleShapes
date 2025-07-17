@@ -18,9 +18,17 @@ function Square({ shape, isSelected, onSelect, onUpdate }) {
    * Handle drag end - update position and stop dragging
    */
   const handleDragEnd = (e) => {
+    // Get the current position of the rect (top-left corner)
+    const rectX = e.target.x();
+    const rectY = e.target.y();
+    
+    // Convert back to center position for storage
+    const centerX = rectX + shape.width / 2;
+    const centerY = rectY + shape.height / 2;
+    
     onUpdate({
-      x: e.target.x(),
-      y: e.target.y(),
+      x: centerX,
+      y: centerY,
       isDragging: false
     });
   };
@@ -42,7 +50,7 @@ function Square({ shape, isSelected, onSelect, onUpdate }) {
       stroke={isSelected ? '#000' : shape.fill}
       strokeWidth={isSelected ? 3 : 1}
       
-      // Position (centered)
+      // Position (convert from center to top-left corner)
       x={shape.x - shape.width / 2}
       y={shape.y - shape.height / 2}
       
