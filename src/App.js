@@ -97,7 +97,7 @@ function App() {
 
   return (
     <div className="app">
-      <div className="title">🔺⬜ Shape Canvas - Learn Shapes! 🔺⬜</div>
+      <div className="title">Shape Canvas - Learn Shapes! 🔺⬜</div>
       
       <Toolbar 
         onAddShape={addShape}
