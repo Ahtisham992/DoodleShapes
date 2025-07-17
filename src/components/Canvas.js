@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Stage, Layer } from 'react-konva';
 import Triangle from './Triangle';
 import Square from './Square';
+import CircleShape from './Circle';
+import Rectangle from './Rectangle';
 
 /**
  * Canvas component that manages the drawing area
@@ -62,6 +64,10 @@ function Canvas({ shapes, selectedShape, onSelectShape, onUpdateShape }) {
         return <Triangle {...commonProps} />;
       case 'square':
         return <Square {...commonProps} />;
+      case 'circle':
+        return <CircleShape {...commonProps} />;
+      case 'rectangle':
+        return <Rectangle {...commonProps} />;
       default:
         return null;
     }

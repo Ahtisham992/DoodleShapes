@@ -42,7 +42,7 @@ function Toolbar({ onAddShape, onErase, onClear, onChangeSize, onChangeColor, on
             onClick={handleDropdownToggle}
             title="Select a shape to add"
           >
-            🔺⬜ Add Shape ▼
+            🔺⬜⭕📐 Add Shape ▼
           </button>
           
           {isDropdownOpen && (
@@ -58,6 +58,18 @@ function Toolbar({ onAddShape, onErase, onClear, onChangeSize, onChangeColor, on
                 onClick={() => handleShapeSelect('square')}
               >
                 ⬜ Square
+              </button>
+              <button 
+                className="dropdown-item"
+                onClick={() => handleShapeSelect('circle')}
+              >
+                ⭕ Circle
+              </button>
+              <button 
+                className="dropdown-item"
+                onClick={() => handleShapeSelect('rectangle')}
+              >
+                📐 Rectangle
               </button>
             </div>
           )}

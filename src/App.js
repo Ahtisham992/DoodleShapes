@@ -20,7 +20,7 @@ function App() {
     
     const newShape = {
       id: Date.now(), // Simple unique ID using timestamp
-      type: shapeType, // 'triangle' or 'square'
+      type: shapeType, // 'triangle', 'square', 'circle', or 'rectangle'
       x: Math.random() * 300 + 100, // Random x position
       y: Math.random() * 200 + 100, // Random y position
       fill: colors[Math.floor(Math.random() * colors.length)], // Random bright color
@@ -35,6 +35,11 @@ function App() {
     } else if (shapeType === 'square') {
       newShape.width = baseSize;
       newShape.height = baseSize;
+    } else if (shapeType === 'circle') {
+      newShape.radius = baseSize / 2;
+    } else if (shapeType === 'rectangle') {
+      newShape.width = baseSize * 1.5; // Make rectangles wider
+      newShape.height = baseSize * 0.8; // Make rectangles shorter
     }
     
     setShapes([...shapes, newShape]);
@@ -82,6 +87,15 @@ function App() {
           updateShape(selectedShape, { size: newSize, points: newPoints });
         } else if (shape.type === 'square') {
           updateShape(selectedShape, { size: newSize, width: newSize, height: newSize });
+        } else if (shape.type === 'circle') {
+          updateShape(selectedShape, { size: newSize, radius: newSize / 2 });
+        } else if (shape.type === 'rectangle') {
+          const scale = newSize / shape.size;
+          updateShape(selectedShape, { 
+            size: newSize, 
+            width: newSize * 1.5, 
+            height: newSize * 0.8 
+          });
         }
       }
     }
@@ -112,7 +126,7 @@ function App() {
 
   return (
     <div className="app">
-      <div className="title">🔺⬜ Shape Canvas - Learn Shapes! 🔺⬜</div>
+      <div className="title">🔺⬜⭕📐 Shape Canvas - Learn Shapes! 🔺⬜⭕📐</div>
       
       <Toolbar 
         onAddShape={addShape}
