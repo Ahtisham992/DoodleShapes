@@ -25,6 +25,7 @@ function App() {
       y: Math.random() * 200 + 100, // Random y position
       fill: colors[Math.floor(Math.random() * colors.length)], // Random bright color
       size: baseSize, // Size multiplier
+      rotation: 0, // Initial rotation in degrees
       isDragging: false
     };
 
@@ -95,9 +96,23 @@ function App() {
     }
   };
 
+  /**
+   * Rotate the selected shape
+   */
+  const rotateShape = (direction) => {
+    if (selectedShape) {
+      const shape = shapes.find(s => s.id === selectedShape);
+      if (shape) {
+        const rotationIncrement = direction === 'left' ? -45 : 45;
+        const newRotation = shape.rotation + rotationIncrement;
+        updateShape(selectedShape, { rotation: newRotation });
+      }
+    }
+  };
+
   return (
     <div className="app">
-      <div className="title">Shape Canvas - Learn Shapes! 🔺⬜</div>
+      <div className="title">🔺⬜ Shape Canvas - Learn Shapes! 🔺⬜</div>
       
       <Toolbar 
         onAddShape={addShape}
@@ -105,6 +120,7 @@ function App() {
         onClear={clearBoard}
         onChangeSize={changeSize}
         onChangeColor={changeColor}
+        onRotate={rotateShape}
         hasSelection={selectedShape !== null}
       />
       

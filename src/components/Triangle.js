@@ -46,6 +46,9 @@ function Triangle({ shape, isSelected, onSelect, onUpdate }) {
       x={shape.x}
       y={shape.y}
       
+      // Rotation
+      rotation={shape.rotation || 0}
+      
       // Interaction
       draggable={true}
       onClick={handleClick}

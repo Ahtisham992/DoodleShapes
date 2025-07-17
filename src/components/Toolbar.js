@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 /**
  * Toolbar component with buttons for shape operations
- * Contains: Shape Dropdown, Size Controls, Color Picker, Erase Selected, Clear Board
+ * Contains: Shape Dropdown, Size Controls, Color Picker, Rotation Controls, Erase Selected, Clear Board
  */
-function Toolbar({ onAddShape, onErase, onClear, onChangeSize, onChangeColor, hasSelection }) {
+function Toolbar({ onAddShape, onErase, onClear, onChangeSize, onChangeColor, onRotate, hasSelection }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState('#ff6b6b');
 
@@ -83,6 +83,29 @@ function Toolbar({ onAddShape, onErase, onClear, onChangeSize, onChangeColor, ha
             title="Increase size"
           >
             +
+          </button>
+        </div>
+      </div>
+
+      {/* Rotation Controls */}
+      <div className="toolbar-group">
+        <div className="size-controls">
+          <span className="size-label">Rotate:</span>
+          <button 
+            className="size-button"
+            onClick={() => onRotate('left')}
+            disabled={!hasSelection}
+            title="Rotate left 45°"
+          >
+            ↺
+          </button>
+          <button 
+            className="size-button"
+            onClick={() => onRotate('right')}
+            disabled={!hasSelection}
+            title="Rotate right 45°"
+          >
+            ↻
           </button>
         </div>
       </div>

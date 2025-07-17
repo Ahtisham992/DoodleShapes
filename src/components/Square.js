@@ -54,6 +54,11 @@ function Square({ shape, isSelected, onSelect, onUpdate }) {
       x={shape.x - shape.width / 2}
       y={shape.y - shape.height / 2}
       
+      // Rotation
+      rotation={shape.rotation || 0}
+      offsetX={shape.width / 2}
+      offsetY={shape.height / 2}
+      
       // Interaction
       draggable={true}
       onClick={handleClick}
