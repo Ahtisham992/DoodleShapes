@@ -1,70 +1,34 @@
 import React from 'react';
 import { Line } from 'react-konva';
 
-/**
- * Triangle component - represents a single draggable triangle
- * Uses Konva Line with closed path to create triangle shape
- */
-function Triangle({ shape, isSelected, onSelect, onUpdate }) {
-  
-  /**
-   * Handle drag start - mark triangle as being dragged
-   */
-  const handleDragStart = () => {
-    onUpdate({ isDragging: true });
-  };
-
-  /**
-   * Handle drag end - update position and stop dragging
-   */
-  const handleDragEnd = (e) => {
-    onUpdate({
-      x: e.target.x(),
-      y: e.target.y(),
-      isDragging: false
-    });
-  };
-
-  /**
-   * Handle click on triangle - select it
-   */
-  const handleClick = (e) => {
-    e.cancelBubble = true; // Prevent stage click
-    onSelect();
-  };
+export default function Triangle({ shape, isSelected, onSelect, onUpdate, onCommit, onContextMenu }) {
+  const handleDragStart = () => onUpdate({ isDragging: true });
+  const handleDragEnd = (e) => onCommit({ x: e.target.x(), y: e.target.y(), isDragging: false });
+  const handleClick = (e) => { e.cancelBubble = true; onSelect(); };
+  const handleContextMenu = (e) => { e.evt.preventDefault(); e.cancelBubble = true; onContextMenu(e); };
 
   return (
     <Line
-      // Triangle properties
       points={shape.points}
       fill={shape.fill}
-      stroke={isSelected ? '#000' : shape.fill}
-      strokeWidth={isSelected ? 3 : 1}
-      closed={true} // This makes it a closed shape (triangle)
-      
-      // Position
+      stroke={isSelected ? '#7c3aed' : 'transparent'}
+      strokeWidth={isSelected ? 2.5 : 0}
+      closed
       x={shape.x}
       y={shape.y}
-      
-      // Rotation
       rotation={shape.rotation || 0}
-      
-      // Interaction
-      draggable={true}
+      opacity={shape.opacity ?? 1}
+      draggable
       onClick={handleClick}
-      onTap={handleClick} // For touch devices
+      onTap={handleClick}
+      onContextMenu={handleContextMenu}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      
-      // Visual feedback
-      shadowBlur={shape.isDragging ? 15 : isSelected ? 10 : 5}
-      shadowColor={shape.isDragging ? 'blue' : isSelected ? 'red' : 'gray'}
-      shadowOpacity={shape.isDragging ? 0.8 : isSelected ? 0.6 : 0.3}
-      
-      // Smooth dragging
+      shadowBlur={shape.isDragging ? 22 : isSelected ? 14 : 6}
+      shadowColor={isSelected ? '#7c3aed' : 'rgba(0,0,0,0.3)'}
+      shadowOpacity={shape.isDragging ? 0.9 : isSelected ? 0.7 : 0.3}
+      shadowOffsetY={shape.isDragging ? 8 : 3}
       perfectDrawEnabled={false}
     />
   );
 }
-
-export default Triangle;

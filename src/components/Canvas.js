@@ -4,90 +4,95 @@ import Triangle from './Triangle';
 import Square from './Square';
 import CircleShape from './Circle';
 import Rectangle from './Rectangle';
+import Star from './Star';
+import Hexagon from './Hexagon';
 
-/**
- * Canvas component that manages the drawing area
- * Handles canvas resizing and shape interactions
- */
-function Canvas({ shapes, selectedShape, onSelectShape, onUpdateShape }) {
+export default function Canvas({
+  shapes, selectedShape, onSelectShape, onUpdateShape,
+  onCommitUpdate, onContextMenu, showGrid, zoom,
+}) {
   const containerRef = useRef(null);
-  const [stageSize, setStageSize] = useState({ width: 800, height: 600 });
+  const [size, setSize] = useState({ w: 800, h: 600 });
 
-  /**
-   * Update canvas size when window is resized
-   */
   useEffect(() => {
-    const updateSize = () => {
+    const update = () => {
       if (containerRef.current) {
-        const container = containerRef.current;
-        setStageSize({
-          width: container.offsetWidth,
-          height: container.offsetHeight
+        setSize({
+          w: containerRef.current.offsetWidth,
+          h: containerRef.current.offsetHeight,
         });
       }
     };
-
-    // Set initial size
-    updateSize();
-
-    // Add resize listener
-    window.addEventListener('resize', updateSize);
-    
-    // Cleanup
-    return () => window.removeEventListener('resize', updateSize);
+    update();
+    const ro = new ResizeObserver(update);
+    if (containerRef.current) ro.observe(containerRef.current);
+    return () => ro.disconnect();
   }, []);
 
-  /**
-   * Handle clicks on empty canvas area (deselect shapes)
-   */
   const handleStageClick = (e) => {
-    // Check if click was on the stage (not on a shape)
-    if (e.target === e.target.getStage()) {
-      onSelectShape(null);
-    }
+    if (e.target === e.target.getStage()) onSelectShape(null);
   };
 
-  /**
-   * Render the appropriate shape component based on shape type
-   */
   const renderShape = (shape) => {
-    const commonProps = {
+    const props = {
       key: shape.id,
-      shape: shape,
+      shape,
       isSelected: selectedShape === shape.id,
       onSelect: () => onSelectShape(shape.id),
-      onUpdate: (newAttrs) => onUpdateShape(shape.id, newAttrs)
+      onUpdate: (attrs) => onUpdateShape(shape.id, attrs),
+      onCommit: (attrs) => onCommitUpdate(shape.id, attrs),
+      onContextMenu: (e) => onContextMenu(e, shape.id),
     };
-
     switch (shape.type) {
-      case 'triangle':
-        return <Triangle {...commonProps} />;
-      case 'square':
-        return <Square {...commonProps} />;
-      case 'circle':
-        return <CircleShape {...commonProps} />;
-      case 'rectangle':
-        return <Rectangle {...commonProps} />;
-      default:
-        return null;
+      case 'triangle':   return <Triangle {...props} />;
+      case 'square':     return <Square {...props} />;
+      case 'circle':     return <CircleShape {...props} />;
+      case 'rectangle':  return <Rectangle {...props} />;
+      case 'star':       return <Star {...props} />;
+      case 'hexagon':    return <Hexagon {...props} />;
+      default:           return null;
     }
   };
 
+  const canvasW = size.w * 0.92;
+  const canvasH = size.h * 0.88;
+
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
-      <Stage 
-        width={stageSize.width} 
-        height={stageSize.height}
-        onClick={handleStageClick}
-        onTap={handleStageClick} // For touch devices
+    <div
+      ref={containerRef}
+      style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+    >
+      <div
+        className="canvas-frame"
+        style={{
+          width: canvasW,
+          height: canvasH,
+          transform: `scale(${zoom})`,
+          transformOrigin: 'center center',
+        }}
       >
-        <Layer>
-          {/* Render all shapes */}
-          {shapes.map(renderShape)}
-        </Layer>
-      </Stage>
+        <div className={`canvas-grid${showGrid ? '' : ' hidden'}`} />
+
+        <div
+          className={`canvas-empty-hint${shapes.length > 0 ? ' hidden' : ''}`}
+        >
+          <div className="canvas-empty-icon">✦</div>
+          <div className="canvas-empty-text">Your canvas is empty</div>
+          <div className="canvas-empty-sub">Click a shape on the left to begin</div>
+        </div>
+
+        <Stage
+          width={canvasW}
+          height={canvasH}
+          onClick={handleStageClick}
+          onTap={handleStageClick}
+          style={{ position: 'relative', zIndex: 2 }}
+        >
+          <Layer>
+            {shapes.map(renderShape)}
+          </Layer>
+        </Stage>
+      </div>
     </div>
   );
 }
-
-export default Canvas;

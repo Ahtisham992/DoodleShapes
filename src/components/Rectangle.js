@@ -1,80 +1,37 @@
 import React from 'react';
 import { Rect } from 'react-konva';
 
-/**
- * Rectangle component - represents a single draggable rectangle
- * Uses Konva Rect to create rectangle shape
- */
-function Rectangle({ shape, isSelected, onSelect, onUpdate }) {
-  
-  /**
-   * Handle drag start - mark rectangle as being dragged
-   */
-  const handleDragStart = () => {
-    onUpdate({ isDragging: true });
-  };
-
-  /**
-   * Handle drag end - update position and stop dragging
-   */
-  const handleDragEnd = (e) => {
-    // Get the current position of the rect (top-left corner)
-    const rectX = e.target.x();
-    const rectY = e.target.y();
-    
-    // Convert back to center position for storage
-    const centerX = rectX + shape.width / 2;
-    const centerY = rectY + shape.height / 2;
-    
-    onUpdate({
-      x: centerX,
-      y: centerY,
-      isDragging: false
-    });
-  };
-
-  /**
-   * Handle click on rectangle - select it
-   */
-  const handleClick = (e) => {
-    e.cancelBubble = true; // Prevent stage click
-    onSelect();
-  };
+export default function Rectangle({ shape, isSelected, onSelect, onUpdate, onCommit, onContextMenu }) {
+  const handleDragStart = () => onUpdate({ isDragging: true });
+  const handleDragEnd = (e) => onCommit({ x: e.target.x(), y: e.target.y(), isDragging: false });
+  const handleClick = (e) => { e.cancelBubble = true; onSelect(); };
+  const handleContextMenu = (e) => { e.evt.preventDefault(); e.cancelBubble = true; onContextMenu(e); };
 
   return (
     <Rect
-      // Rectangle properties
       width={shape.width}
       height={shape.height}
       fill={shape.fill}
-      stroke={isSelected ? '#000' : shape.fill}
-      strokeWidth={isSelected ? 3 : 1}
-      
-      // Position (convert from center to top-left corner)
-      x={shape.x - shape.width / 2}
-      y={shape.y - shape.height / 2}
-      
-      // Rotation
-      rotation={shape.rotation || 0}
+      stroke={isSelected ? '#7c3aed' : 'transparent'}
+      strokeWidth={isSelected ? 2.5 : 0}
+      cornerRadius={4}
+      x={shape.x}
+      y={shape.y}
       offsetX={shape.width / 2}
       offsetY={shape.height / 2}
-      
-      // Interaction
-      draggable={true}
+      rotation={shape.rotation || 0}
+      opacity={shape.opacity ?? 1}
+      draggable
       onClick={handleClick}
-      onTap={handleClick} // For touch devices
+      onTap={handleClick}
+      onContextMenu={handleContextMenu}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      
-      // Visual feedback
-      shadowBlur={shape.isDragging ? 15 : isSelected ? 10 : 5}
-      shadowColor={shape.isDragging ? 'blue' : isSelected ? 'red' : 'gray'}
-      shadowOpacity={shape.isDragging ? 0.8 : isSelected ? 0.6 : 0.3}
-      
-      // Smooth dragging
+      shadowBlur={shape.isDragging ? 22 : isSelected ? 14 : 6}
+      shadowColor={isSelected ? '#7c3aed' : 'rgba(0,0,0,0.3)'}
+      shadowOpacity={shape.isDragging ? 0.9 : isSelected ? 0.7 : 0.3}
+      shadowOffsetY={shape.isDragging ? 8 : 3}
       perfectDrawEnabled={false}
     />
   );
 }
-
-export default Rectangle;
